@@ -80,7 +80,7 @@ const Login = ({navigation}) => {
             <Text style={{
               color: "#0065e0"
             }}>Sign up</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> 
         </View>
     </View>
   );
