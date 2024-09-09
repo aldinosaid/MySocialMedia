@@ -1,26 +1,36 @@
-import React, { Component, useContext, useState } from 'react';
+import React, { Component, useContext, useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
   Text,
   TextInput,
   Image,
   View,
   TouchableOpacity,
-  Button,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Styles from '../../assets/Styles';
-import { useNavigation } from '@react-navigation/native';
 import {AuthContext} from '../../context/AuthContext';
 import Spinner from 'react-native-loading-spinner-overlay';
+import styles from '../../assets/Styles';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const {isLoading, login} = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const {isLoading, login, error} = useContext(AuthContext);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  }
+
+  useEffect(() => {
+    if (error.status) {
+      Alert.alert('Invalid Crendetials', error.message, [
+        {text: 'Close', onPress: () => error.status = false}
+      ])
+    }
+  });
+
   return (
     <View style={Styles.container}>
       <Spinner visible={isLoading} />
@@ -38,14 +48,20 @@ const Login = ({navigation}) => {
             placeholder='Enter password'
             value={password}
             onChangeText={text => setPassword(text)}
-            secureTextEntry
+            secureTextEntry={!showPassword}
           />
           <TouchableOpacity style={{
-            position: 'absolute',
-            top: 20,
-            right: 20
-          }}>
-            <Icon name="eye" size={20} color="#000000" />
+              position: 'absolute',
+              top: 20,
+              right: 20
+            }}
+            onPress={toggleShowPassword}
+          >
+            <Icon
+              name={showPassword ? "eye" : "eye-slash"}
+              size={20}
+              color="#000000"
+            />
           </TouchableOpacity>
       </View>
         <TouchableOpacity
@@ -56,12 +72,16 @@ const Login = ({navigation}) => {
           >
           <Text style={Styles.submitText}>Login</Text>
         </TouchableOpacity>
-      <TouchableOpacity
-          style={Styles.createNewAccountButton}
-          onPress={() => navigation.navigate("SIGNUP")}
-      >
-          <Text style={Styles.submitText}>Create new account</Text>
-      </TouchableOpacity>
+        <View style={styles.row}>
+          <Text>Don't have an account?</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SIGNUP")}
+          >
+            <Text style={{
+              color: "#0065e0"
+            }}>Sign up</Text>
+          </TouchableOpacity> 
+        </View>
     </View>
   );
 }
@@ -70,7 +90,7 @@ class BannerLogin extends Component {
   render() {
     return (
       <View style={Styles.bannerSection}>
-        <Image source={{uri: 'https://z-m-static.xx.fbcdn.net/rsrc.php/v3/yD/r/5D8s-GsHJlJ.png'}} style={Styles.banner}/>
+        <Image source={{uri: 'https://play-lh.googleusercontent.com/91-qMvusADZofvinlA3QgGEa78s3TYp7u0RUPW5bpORo4Juft-S7sfVXHPR0HZThFA'}} style={Styles.banner}/>
       </View>
     );
   }

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useEffect, useState } from 'react'
 import axios from 'axios';
 import {BASE_URL} from '../config';
+import { Alert } from 'react-native';
 
 export const AuthContext = createContext();
 
@@ -9,6 +10,10 @@ export const AuthProvider = ({children}) => {
     const [userInfo, setUserInfo] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [splashLoading, setSplashLoading] = useState(false);
+    const [error, setError] = useState({
+        status: false,
+        message: ''
+    });
 
     const signup = ( firstName, lastName, email, password ) => {
         setIsLoading(true);
@@ -49,6 +54,10 @@ export const AuthProvider = ({children}) => {
         })
         .catch(e => {
             console.log(`login error ${e}`);
+            setError({
+                status: true,
+                message: 'Username or Password invalid'
+            });
             setIsLoading(false);
         });
     }
@@ -84,7 +93,8 @@ export const AuthProvider = ({children}) => {
             userInfo,
             splashLoading,
             signup,
-            login
+            login,
+            error
         }}>
             {children}
         </AuthContext.Provider>
