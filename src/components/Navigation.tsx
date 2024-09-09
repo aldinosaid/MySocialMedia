@@ -13,7 +13,6 @@ const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
   const {userInfo, splashLoading} = useContext(AuthContext);
-  console.log(userInfo.data)
 
   return (
     <NavigationContainer>
