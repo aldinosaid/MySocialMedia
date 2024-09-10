@@ -1,4 +1,4 @@
-import React, { Component, useContext, useState } from 'react';
+import React, { Component, useContext, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -8,7 +8,8 @@ import {
   Image,
   View,
   TouchableHighlight,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Styles from '../../assets/Styles';
@@ -21,7 +22,35 @@ const SignUp = ({navigation}) => {
     const [firstName, setFirstName] = useState(null);
     const [lastName, setLastName] = useState(null);
     const [email, setEmail] = useState(null);
-    const {isLoading, signup} = useContext(AuthContext);
+    const {isLoading, signup, error} = useContext(AuthContext);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
+
+    const toggleShowConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    }
+
+    const passwordValidation = (text) => {
+        console.log(text);
+        if (password != text) {
+            setErrorMessage("Passwords do not match");
+        } else {
+            setErrorMessage('');
+        }
+    }
+
+    useEffect(() => {
+        if (error.status) {
+          Alert.alert('Sign up failed', error.message, [
+            {text: 'Close', onPress: () => error.status = false}
+          ])
+        }
+      });
 
     return (
         <View style={Styles.container}>
@@ -56,14 +85,18 @@ const SignUp = ({navigation}) => {
                     placeholder='New password'
                     value={password}
                     onChangeText={text => setPassword(text)}
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity style={{
-                position: 'absolute',
-                top: 20,
-                right: 20
-                }}>
-                <Icon name="eye" size={20} color="#000000" />
+                        position: 'absolute',
+                        top: 20,
+                        right: 20
+                    }}
+                    onPress={toggleShowPassword}
+                >
+                    <Icon name={
+                        showPassword ? "eye" : "eye-slash"
+                    } size={20} color="#000000" />
                 </TouchableOpacity>
             </View>
             <View style={{
@@ -73,16 +106,27 @@ const SignUp = ({navigation}) => {
                     style={Styles.textInput}
                     placeholder='Confirmation password'
                     value={passwordConfirm}
-                    onChangeText={text => setPasswordConfirm(text)}
-                    secureTextEntry
+                    onChangeText={text => passwordValidation(text)}
+                    secureTextEntry={!showConfirmPassword}
                 />
                 <TouchableOpacity style={{
-                    position: 'absolute',
-                    top: 20,
-                    right: 20
-                }}>
-                <Icon name="eye" size={20} color="#000000" />
+                        position: 'absolute',
+                        top: 20,
+                        right: 20
+                    }}
+                    onPress={toggleShowConfirmPassword}
+                >
+                <Icon name={
+                        showConfirmPassword ? "eye" : "eye-slash"
+                    } size={20} color="#000000" />
                 </TouchableOpacity>
+                {
+                    errorMessage ? <Text style={{
+                        color:"#f22c3d",
+                        fontSize: 12,
+                        marginTop:6
+                    }}>Password do not match</Text> : null
+                }
             </View>
             </View>
             <TouchableOpacity
@@ -93,12 +137,16 @@ const SignUp = ({navigation}) => {
             >
                 <Text style={Styles.submitText}>Submit</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-                style={Styles.createNewAccountButton}
-                onPress={() => navigation.navigate("LOGIN")}
-            >
-                <Text style={Styles.submitText}>Login</Text>
-            </TouchableOpacity>
+            <View style={Styles.row}>
+                <Text>Already have an account?</Text>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("LOGIN")}
+                >
+                    <Text style={{
+                    color: "#0065e0"
+                    }}>Login</Text>
+                </TouchableOpacity> 
+            </View>
         </View>
     );
 }

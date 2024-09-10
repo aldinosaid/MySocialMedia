@@ -32,7 +32,11 @@ export const AuthProvider = ({children}) => {
             console.log(userInfo);
         })
         .catch(e => {
-            console.log(`register error ${e}`);
+            console.log(`login error ${e}`);
+            setError({
+                status: true,
+                message: 'Please check input field'
+            });
             setIsLoading(false);
         });
     }
