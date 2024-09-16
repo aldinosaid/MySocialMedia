@@ -57,18 +57,18 @@ const SignUp = ({navigation}) => {
             <Spinner visible={isLoading} />
             <Header />
             <View style={Styles.row}>
-            <TextInput
-                style={Styles.formInput}
-                placeholder='First name'
-                value={firstName}
-                onChangeText={text => setFirstName(text)}
-            />
-            <TextInput
-                style={Styles.formInput}
-                placeholder='Last name'
-                value={lastName}
-                onChangeText={text => setLastName(text)}
-            />
+                <TextInput
+                    style={Styles.formInput}
+                    placeholder='First name'
+                    value={firstName}
+                    onChangeText={text => setFirstName(text)}
+                />
+                <TextInput
+                    style={Styles.formInput}
+                    placeholder='Last name'
+                    value={lastName}
+                    onChangeText={text => setLastName(text)}
+                />
             </View>
             <View style={Styles.column}>
             <TextInput
